@@ -110,12 +110,6 @@ h2 {
     padding: 1.5em 2em 0;
 }
 
-.bp-game__screen {
-    min-width: 300px;
-    margin: 0;
-    padding: 0;
-}
-
 .bp-game__start,
 .bp-game__pause,
 .bp-game__quit {
@@ -167,8 +161,11 @@ h2 {
     background-position-x: 1px;
 }
 
-.bp-next__block {
-
+.bp-game__screen,
+.bp-next__screen {
+    min-width: 300px;
+    margin: 0;
+    padding: 0;
 }
 
 .bp-score {

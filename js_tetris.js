@@ -28,7 +28,7 @@ var gameStatus = {
 var keyPresses = [ 0 ];
 var storedFunctions = [];
 var tetro = {
-    position: { x:(W-48)/2,y:0 },
+    position: { x:(W-24)/2,y:0 },
     boundaryPoints: [ [ 18, 36, 54,{x:24,y:48},{x:48,y:48}], [ 48, 48, 48 ] ]
 };
 
@@ -98,7 +98,7 @@ function createCanvas() {
 function createCanvasNext() {
     canvas__next = document.getElementById("canvas__next");
     ctx__next = canvas__next.getContext("2d");
-    canvasData__next = ctx__next.getImageData(0,0,264,528);
+    canvasData__next = ctx__next.getImageData(0,0,144,96);
     ctx__next.putImageData(canvasData__next,0,0);
 }
 
@@ -107,12 +107,14 @@ function Tetro(name, imgSrc, xBound1, yBound1, xBound2, yBound2, xBound3, yBound
     this.image = new Image();
     this.image.src = imgSrc,
     this.image.alt = name,
-    this.boundaryPoints = [ xBound1, yBound1, xBound2, yBound2, xBound3, yBound3 ];
+    this.boundaryPoints = [ xBound1, yBound1, xBound2, yBound2, xBound3, yBound3 ],
+    this.image.crossorigin = "same-origin";
     return this;  
 }
 
+/* Rotate current Tetrominos on Canvas */
 function rotateTetro(tetro) {
-    console.log(tetro);
+    //console.log(tetro);
     switch(tetro.image.alt) {
         // O - Block rotations
         case "O": // Does not rotate
@@ -163,18 +165,19 @@ function rotateTetro(tetro) {
     }
 }
 
+/* Randomly select a Tetro */
 function randomizeTetro() {
     var random = Math.floor(Math.random() * 7);
-    console.log(TetroArray[random]);
     return TetroArray[random];
 }
 
+/* Draw Tetro to Game Canvas */
 function drawTetro(tetro,xpos,ypos) {
     ctx.drawImage(tetro.image,xpos,ypos);
 }
 
+/* Draw Tetro to Next Canvas */
 function drawTetroNext(tetro,xpos,ypos) {
-    console.log(tetro);
     if (tetro.image.alt == "I") {
         // Rotate image if L Tetro is selected
         tetro = rotateTetro(tetro);
@@ -185,14 +188,15 @@ function drawTetroNext(tetro,xpos,ypos) {
 }
 
 
+/**** Checking from here DOWN ****/
 
 
 function detectCollision() {
     getHitInfo();
-    if (tetro.position.y + currentTetro.image.height == H || (currentTetro.hit1.data[0] != 0 || currentTetro.hit2.data[1] !=0 || currentTetro.hit3.data[0] != 0)) {
+    if (tetro.position.y + currentTetro.image.height == H || (currentTetro.hit1.data[0] != 0 || currentTetro.hit2.data[1] != 0 || currentTetro.hit3.data[0] != 0)) {
         rowCheck();
         resetTetro();
-        copyCanvas();
+        canvasData = ctx.getImageData(0,0,264,528);
         ITER++;
     }
 }
@@ -206,14 +210,14 @@ function rowCheck() {
                          [],
                          [] ];
     var positionArray = [ 516, 492, 468, 444, 420, 396, 372 ];
-    for (var j=0; j<positionArray.length; j++) {
-        for (var x=12; x<420; x+=24) {
+    for (var j = 0; j < positionArray.length; j++) {
+        for (var x = 12; x < 420; x += 24) {
             var imgData = ctx.getImageData(x,positionArray[j],1,1);
             imgDataArray[j].push(imgData);
         }
     }
     
-    for (var m=0; m<imgDataArray.length; m++) {
+    for (var m = 0; m < imgDataArray.length; m++) {
         var rowChecked = checkRows(m,imgDataArray);
         if (rowChecked == true) {
             clearRow(m);
@@ -222,7 +226,7 @@ function rowCheck() {
 }
     
 function checkRows(row, imgDataArray) {
-    for (var i=0; i<imgDataArray[row].length; i++) {
+    for (var i = 0; i < imgDataArray[row].length; i++) {
         if (imgDataArray[row][i].data[0] == 0 && imgDataArray[row][i].data[1] == 0 && imgDataArray[row][i].data[2] == 0) {
             return false;
         }
@@ -230,29 +234,36 @@ function checkRows(row, imgDataArray) {
     return true;
 }
 
+/* Update Game Scoreboard */
 function clearRow(row) {
     var arrayRow = [ 504, 480, 456, 432, 408, 384, 360 ];
     var savedCanvas = ctx.getImageData(0,0,W,arrayRow[row]);
     ctx.putImageData(savedCanvas,0,24);
-    gameStatus.points+=100;
-    var score = document.getElementById("score");
-    score.innerHTML = "SCORE: " + gameStatus.points;
+    gameStatus.points += 100;
+    
+    //var score = document.getElementById("score");
+    //score.innerHTML = "SCORE: " + gameStatus.points;
+
+    while( score.firstChild ) {
+        score.removeChild( score.firstChild );
+    }
+    score.appendChild( document.createTextNode("400") );
 }
 
-function resetTetro(){
+function resetTetro() {
     tetro.position.y = 0;
     currentTetro = randomizeTetro();
     tetro.position.x = (W-48)/2;
 }
 
 function getHitInfo() {
-    currentTetro.hit1 = ctx.getImageData(tetro.position.x+currentTetro.boundaryPoints[0],tetro.position.y+currentTetro.boundaryPoints[1]+1,1,1);
-    currentTetro.hit2 = ctx.getImageData(tetro.position.x+currentTetro.boundaryPoints[2],tetro.position.y+currentTetro.boundaryPoints[3]+1,1,1);
-    currentTetro.hit3 = ctx.getImageData(tetro.position.x+currentTetro.boundaryPoints[4],tetro.position.y+currentTetro.boundaryPoints[5]+1,1,1)   
+    currentTetro.hit1 = ctx.getImageData(tetro.position.x + currentTetro.boundaryPoints[0],tetro.position.y + currentTetro.boundaryPoints[1] + 1, 1, 1);
+    currentTetro.hit2 = ctx.getImageData(tetro.position.x + currentTetro.boundaryPoints[2],tetro.position.y + currentTetro.boundaryPoints[3] + 1, 1, 1);
+    currentTetro.hit3 = ctx.getImageData(tetro.position.x + currentTetro.boundaryPoints[4],tetro.position.y + currentTetro.boundaryPoints[5] + 1, 1, 1);
 }
 
 function moveX() {
-    tetro.position.x+=keyPresses[0];
+    tetro.position.x += keyPresses[0];
     tetro.position.x = Math.max(0, Math.min(tetro.position.x, (W - currentTetro.image.width)));
     keyPresses.unshift(0);
 }
@@ -261,11 +272,11 @@ function dropDownTetro() {
     while (tetro.position.y != 0) {
         tetro.position.y+=12;
         getHitInfo();
-        if (tetro.position.y + currentTetro.image.height == H || (currentTetro.hit1.data[0] != 0 || currentTetro.hit2.data[1] !=0 || currentTetro.hit3.data[0] != 0)) {
-            drawCanvas();
-            drawTetro(currentTetro.image,tetro.position.x,tetro.position.y);
+        if (tetro.position.y + currentTetro.image.height == H || (currentTetro.hit1.data[0] != 0 || currentTetro.hit2.data[1] != 0 || currentTetro.hit3.data[0] != 0)) {
+            ctx.putImageData(canvasData,0,0);
+            drawTetro(currentTetro,tetro.position.x,tetro.position.y);
             rowCheck();
-            copyCanvas();
+            canvasData = ctx.getImageData(0,0,264,528);
             resetTetro();
             ITER++;
         }
@@ -273,19 +284,13 @@ function dropDownTetro() {
 }
 
 
-/* Update Game Scoreboard */
+/**** Checking from here UP ****/
 
-function UpdateScore() {
-    while( score.firstChild ) {
-        score.removeChild( score.firstChild );
-    }
-    score.appendChild( document.createTextNode("400") );
-}
-
+/* Update Game State */
 function updateGameState() {
-    canvasData = ctx.getImageData(0,0,264,528);
+    //canvasData = ctx.getImageData(0,0,264,528);
     ctx.putImageData(canvasData,0,0);
-    tetro.position.y+=12;
+    tetro.position.y += 12;
     moveX();
     drawTetro(currentTetro,tetro.position.x,tetro.position.y);
     detectCollision();
@@ -301,28 +306,26 @@ var quit = document.getElementById("quit");
 
 // Read user input
 document.addEventListener("keydown", function(event) {
-    keyPressed = event.which;
+    action = event.which;
 
-    switch(keyPressed) {
+    switch(action) {
         case 32: 
             //console.log("Space");
             dropDownTetro();
         break;
         case 37: 
         case 65: 
-            console.log("Left");
-            //moveX(-24);
+            //console.log("Left");
             keyPresses.unshift(-24);
         break;
         case 38:
         case 87:
-            //console.log("Up");
-            rotateTetro();
+            console.log("Up");
+            rotateTetro(currentTetro);
         break;
         case 39: 
         case 68:
-            console.log("Right");
-            //moveX(24);
+            //console.log("Right");
             keyPresses.unshift(24);
         break;
         case 40:
@@ -332,8 +335,8 @@ document.addEventListener("keydown", function(event) {
         break;
         case 80: 
             // Pause Game
-            console.log("Pause Game")
-            //PauseGame();
+            //console.log("Pause Game")
+            PauseGame();
         break;
     }
 })
@@ -349,7 +352,7 @@ function resetAnimation(el) {
 
 // Start or Resume the game.
 function StartGame() {
-    //gameTimer = setInterval(updateGameState, 1000 / fps);
+    gameTimer = setInterval(updateGameState, 1000 / fps);
     gameRunning = true;
     start.classList.add("hide");
     pause.classList.remove("hide");
@@ -357,7 +360,7 @@ function StartGame() {
 
 // Pause the game in its current state.
 function PauseGame() {
-    //clearInterval(gameTimer);
+    clearInterval(gameTimer);
     gameRunning = false;
     pause.classList.add("hide");
     start.classList.remove("hide");
@@ -375,7 +378,7 @@ function QuitGame() {
 
         // More to be added...
     } else {
-        // Resume playing.
+        // Resume playing...
         StartGame();
     }
 }
@@ -408,12 +411,13 @@ window.onload = function() {
     createCanvas();
     createCanvasNext();
 
-    /*if (ITER == 0) {
-        currentTetro = randomizeTetro();
+    if (ITER == 0) {
+        nextTetro = randomizeTetro();
     };
+    currentTetro = nextTetro;
     nextTetro = randomizeTetro();
-    drawTetro(currentTetro, 48, 48);
+    //drawTetro(currentTetro, 48, 48);
     drawTetroNext(nextTetro, 48, 24);
-    ITER++; // Iterate to next round*/
+    //ITER++; // Iterate to next round
 }
 
