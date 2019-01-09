@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <meta charset="utf-8">
+        <title>JS Tetris by Andy</title>
+        <link rel="stylesheet" type="text/css" href="js_tetris.css">
+    </head>
+    
+    <body>
+        <div class="container">
+            <div class="bp-game cf">
+                <div class="bp-game__box">
+                    <div class="mobile-only">
+                        <h2 class="bp-title large">JS<b>Tetris</b></h2>
+                        <div class="bp-score">SCORE: <span>0</span></div>
+                    </div>
+                    <div class="bp-game__screen">
+                        <canvas id="canvas"
+                                height=528
+                                width=264
+                                class="bp-canvas">
+                        </canvas>
+                    </div>
+                </div>
+                
+                <div class="bp-instructions">
+                    <div class="desktop-only">
+                        <h2 class="bp-title large">JS<b>Tetris</b></h2>
+                        <h2 class="bp-title">next</h2>
+                        <div class="bp-next">
+                            <!--<div class="bp-next__block"></div>-->
+                            <div class="bp-game__screen">
+                            <canvas id="canvas__next"
+                                    height=96
+                                    width=144
+                                    class="bp-canvas__next">
+                            </canvas>
+                        </div>
+                        </div>
+                        <h2 class="bp-title">score</h2>
+                        <div id="score" class="bp-score"><span class="bp-score__value">0</span></div>
+                    </div>
+                    <button id="start" class="bp-game__start" onclick="StartGame()">start</button>
+                    <button id="pause" class="bp-game__pause hide" onclick="PauseGame()">pause</button>
+                    <button id="quit" class="bp-game__quit" onclick="QuitGame()">quit</button>
+                    <h2 class="bp-title">Instructions</h2>
+                    <ul>
+                        <li><b>UP ARROW</b> = Rotate Tetrominoe</li></br>
+                        <li><b>LEFT ARROW</b> = Tetrominoe Left</li></br>
+                        <li><b>RIGHT ARROW</b> = Tetrominoe Right</li></br>
+                        <li><b>DOWN ARROW</b> = Tetrominoe down one spot</li></br>
+                        <li><b>SPACE BAR</b> = Send Tetrominoe to the bottom</li></br></br>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!--<script src="dummydata.js"></script>-->
+        <script src="js_tetris.js"></script>
+    </body>
+    
+</html>
