@@ -26,6 +26,7 @@
 /* Main styles */
 
 body {
+    /*font-size: 15px;*/
     font-family: 'Lato', 'Segoe UI', Helvetica, Arial, sans-serif;
     overflow: hidden;
     margin: 0;
@@ -89,11 +90,15 @@ h2 {
     z-index: 100;
     display: block;
     padding: 0.3em 0;
+    /*margin: 1.5em 0 0;*/
     text-indent: 3px;
     letter-spacing: 2px;
     background: -webkit-linear-gradient(#bbb, #555);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+.bp-title__instructions {
 }
 
 .bp-title.large {
@@ -161,7 +166,12 @@ h2 {
     background-position-x: 1px;
 }
 
-.bp-game__screen,
+.bp-game__screen {
+    min-width: 300px;
+    margin: 1em 0 0;
+    padding: 0;
+}
+
 .bp-next__screen {
     min-width: 300px;
     margin: 0;
@@ -224,12 +234,42 @@ h2 {
         font-size: 15px;
     }
 
+    .bp-title {
+        text-align: center;
+    }
+
+    .bp-title__instructions {
+
+    }
+
+    .bp-next {
+        margin: 0.25em auto 1em;
+    }
+
     .bp-game {
         flex-direction: column;
     }
 
+    .bp-game__screen {
+        margin-top: 0;
+    }
+
     .bp-game__box,
     .bp-instructions {
+        margin: 0 auto;
+    }
+
+    .bp-game__start,
+    .bp-game__pause,
+    .bp-game__quit {
+        margin: 1em auto 0;
+    }
+
+    .bp-score {
+        margin: 0.5em auto 1.5em;
+    }
+
+    .bp-canvas {
         margin: 0 auto;
     }
 
@@ -245,9 +285,9 @@ h2 {
 }
 
 @media screen and (max-width: 500px) {
-    body {
+    /*body {
         font-size: 10px;
-    }
+    }*/
 
     .bp-game__box,
     .bp-instructions {
